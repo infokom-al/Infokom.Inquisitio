@@ -1,0 +1,50 @@
+﻿<div>
+	@if (Citizen is not null)
+	{
+		<dl class="row">
+			<dt class="col-2">GivenName</dt>
+			<dd class="col-10 col-sm-4">@Citizen.GivenName</dd>
+			<dt class="col-2">FamilyName</dt>
+			<dd class="col-10 col-sm-4">@Citizen.FamilyName</dd>
+			<dt class="col-2">FatherName</dt>
+			<dd class="col-10 col-sm-4">@Citizen.FatherName</dd>
+			<dt class="col-2">MotherName</dt>
+			<dd class="col-10 col-sm-4">@Citizen.MotherName</dd>
+
+
+
+			<dt class="col-2">BirthDate</dt>
+			<dd class="col-10 col-sm-4">@Citizen.BirthDate</dd>
+			<dt class="col-2">BirthPlace</dt>
+			<dd class="col-10 col-sm-4">@Citizen.BirthPlace</dd>
+			<dt class="col-2">Gender</dt>
+			<dd class="col-10 col-sm-4">@Citizen.Gender</dd>
+
+
+			<dt class="col-2">Marital</dt>
+			<dd class="col-10 col-sm-4">@Citizen.Marital</dd>
+			<dt class="col-2"></dt><dd class="col-10 col-sm-4">@Citizen.Consort.GivenName</dd>
+			<dt class="col-2"></dt><dd class="col-10 col-sm-4">@Citizen.Consort.FamilyName</dd>
+			<dt class="col-2"></dt><dd class="col-10 col-sm-4">@Citizen.Consort.MaidenName</dd>
+
+			<dt class="col-2">Address</dt>
+			<dd class="col-10 col-sm-4">
+				<dl>
+					<dt class="col-2">District</dt>
+					<dd class="col-10 col-sm-4">@Citizen.District</dd>
+					<dt class="col-2">Address</dt>
+					<dd class="col-10 col-sm-4">@Citizen.Address</dd>
+				</dl>
+			</dd>
+
+			<dt class="col-2">Nationality</dt>
+			<dd class="col-10 col-sm-4">@Citizen.Nationality</dd>
+		</dl>
+	}
+</div>
+
+@code {
+
+	[Parameter]
+	public Citizen Citizen { get; set; }
+}

@@ -1,0 +1,65 @@
+﻿@inject IRegistryService RegistryService
+
+<h3>@FamilyId</h3>
+
+@if (members != null)
+{
+	<Grid Class="table table-hover table-bordered table-striped"
+		 AllowPaging="false"
+		 AllowSorting="false"
+		 AllowFiltering="false"
+		 TItem="Family.Member"
+		 DataProvider="GridDataProvider">
+
+		<GridColumns>
+			<GridColumn TItem="Family.Member" HeaderText="Lidhja me Kryefamiljarin" PropertyName="Role">
+				@Infokom.Inquisitio.Domain.Atomics.Kinships.GetName(context.Role)
+			</GridColumn>
+
+			<GridColumn TItem="Family.Member" HeaderText="Emer" PropertyName="GivenName" Sortable="true">
+				@context.IsA.GivenName
+			</GridColumn>
+			<GridColumn TItem="Family.Member" HeaderText="Mbiemer" PropertyName="FamilyName" Sortable="true">
+				@context.IsA.FamilyName
+			</GridColumn>
+			<GridColumn TItem="Family.Member" HeaderText="Atesi" PropertyName="FatherName">
+				@context.IsA.FatherName
+			</GridColumn>
+			<GridColumn TItem="Family.Member" HeaderText="Amesi" PropertyName="MotherName">
+				@context.IsA.MotherName
+			</GridColumn>
+			<GridColumn TItem="Family.Member" HeaderText="Datelindje" PropertyName="BirthDate" Sortable="true" SortDirection="SortDirection.Ascending">
+				@context.IsA.BirthDate
+			</GridColumn>
+			<GridColumn TItem="Family.Member" HeaderText="Vendlindje" PropertyName="BirthPlace">
+				@context.IsA.BirthPlace
+			</GridColumn>
+		</GridColumns>
+	</Grid>
+}
+
+@code {
+	private IEnumerable<Family.Member> members;
+
+	[Parameter]
+	public long FamilyId { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+
+
+
+		members = await this.RegistryService.Families.AsNoTracking().Where(x => x.Id == FamilyId)
+			.SelectMany(x => x.Members)
+			.Include(y => y.IsA)
+			.ToArrayAsync();
+	}
+
+	private async Task<GridDataProviderResult<Family.Member>> GridDataProvider(GridDataProviderRequest<Family.Member> request)
+	{
+
+
+		return await Task.FromResult(request.ApplyTo(members));
+	}
+}
+
