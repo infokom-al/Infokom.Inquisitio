@@ -13,8 +13,7 @@ namespace Infokom.Inquisitio.Database.Registry.Configurations
 
 			entity.OwnsMany(x => x.Members)
 				.ToTable("Family.Member", "Registry")
-				.WithOwner()
-				.HasForeignKey(y => y.OwnerId);
+				.WithOwner(y => y.Owner);
 		}
 	}
 }

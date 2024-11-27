@@ -32,6 +32,7 @@ namespace Infokom.Inquisitio.Database.Registry
 		{
 			configuration.Properties<Gender>().HaveConversion<EnumToNumberConverter<Gender, byte>>();
 			configuration.Properties<Marital>().HaveConversion<EnumToNumberConverter<Marital, byte>>();
+			configuration.Properties<Kinship>().HaveConversion<EnumToNumberConverter<Kinship, byte>>();
 		}
 
 		protected override void OnModelCreating(ModelBuilder model)

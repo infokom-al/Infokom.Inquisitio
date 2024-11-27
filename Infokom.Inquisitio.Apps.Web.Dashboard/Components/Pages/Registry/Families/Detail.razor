@@ -13,7 +13,7 @@
 
 		<GridColumns>
 			<GridColumn TItem="Family.Member" HeaderText="Lidhja me Kryefamiljarin" PropertyName="Role">
-				@Infokom.Inquisitio.Domain.Atomics.Kinships.GetName(context.Role)
+				@context.Role.GetDisplayName()
 			</GridColumn>
 
 			<GridColumn TItem="Family.Member" HeaderText="Emer" PropertyName="GivenName" Sortable="true">

@@ -1,14 +1,17 @@
 ﻿using Infokom.Inquisitio.Domain.Atomics;
 
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infokom.Inquisitio.Domain.Entities.Registry
 {
-	public class Citizen
+	public partial class Citizen
 	{
+
 		[Key]
 		public long Id { get; set; }
+
+		[StringLength(10, MinimumLength = 10)]
+		public string Code { get; set; }
 
 		[Required, MaxLength(64)]
 		public string Register { get; set; }
@@ -38,27 +41,10 @@ namespace Infokom.Inquisitio.Domain.Entities.Registry
 		[Required, MaxLength(64)]
 		public string District { get; set; }
 
-		[ForeignKey(nameof(Marital))]
-		public Marital Marital { get; set; }
-
 		[Required, MaxLength(64)]
 		public string Nationality { get; set; }
 
-		public Consort Consort { get; set; } = new Consort();
-	}
-
-
-
-	public record Consort
-	{
-		[MaxLength(64)]
-		public string GivenName { get; set; }
-
-		[MaxLength(64)]
-		public string FamilyName { get; set; }
-
-		[MaxLength(64)]
-		public string MaidenName { get; set; }
+		public Marital Marital { get; set; }
 	}
 }
 

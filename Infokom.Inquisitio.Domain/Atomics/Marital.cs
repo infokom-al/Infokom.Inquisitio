@@ -4,6 +4,8 @@ namespace Infokom.Inquisitio.Domain.Atomics
 {
 	public enum Marital : byte
 	{
+		None = 0,
+
 		/// <summary>
 		/// Celibate
 		/// </summary>
