@@ -1,0 +1,98 @@
+﻿@inherits EntityDetails<RegistryDbContext, long, Family>
+
+
+@if (this.Entity != null)
+{
+
+	<Card>
+		<CardHeader>
+			<h3>@this.Title</h3>
+			<p>@this.Excerpt</p>
+		</CardHeader>
+		<CardBody>
+			<Grid Class="table table-hover table-bordered table-striped small"
+				 Responsive="true"
+				 FixedHeader="true"
+				 AllowPaging="true" AutoHidePaging="true"
+				 AllowSorting="false"
+				 AllowFiltering="false"
+				 TItem="Family.Member"
+				 DataProvider="GridDataProvider">
+
+				<GridColumns>
+					<GridColumn TItem="Family.Member" HeaderText="Emeri" PropertyName="GivenName">
+						@(context.IsA.GivenName + " " + context.IsA.FamilyName)
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Atesia" PropertyName="FatherName">
+						@context.IsA.FatherName
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Amesia" PropertyName="MotherName">
+						@context.IsA.MotherName
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Gjinia" PropertyName="Gender">
+						@context.IsA.Gender.GetDisplayName()
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Lidhja me K. Familjarin" PropertyName="Role" SortDirection="SortDirection.Ascending">
+						@context.Role.GetDisplayName()
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Datelindje" PropertyName="BirthDate" Sortable="true" SortDirection="SortDirection.Ascending">
+						@context.IsA.BirthDate
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Vendlindje" PropertyName="BirthPlace">
+						@context.IsA.BirthPlace
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Gj. Civile" PropertyName="Marital">
+						@context.IsA.Marital.GetDisplayName()
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Shtetesia" PropertyName="Nationality">
+						@context.IsA.Nationality
+					</GridColumn>
+					<GridColumn TItem="Family.Member" HeaderText="Nr. Personal" PropertyName="Code">
+						@context.IsA.Code
+					</GridColumn>
+				</GridColumns>
+			</Grid>
+		</CardBody>
+		<CardFooter>
+			<div class="d-flex flex-row justify-content-end">
+				<Button Type="ButtonType.Button" Color="ButtonColor.Primary">
+					<Icon Name="IconName.Printer"></Icon>
+				</Button>
+			</div>
+		</CardFooter>
+	</Card>
+}
+
+@code {
+
+	protected override string Title => "FAMILJA";
+
+	protected override string Excerpt => this.Entity?.Members.Where(x => x.Role == Infokom.Inquisitio.Domain.Atomics.Kinship._1).Select(x => x.IsA.GivenName + " " + x.IsA.FamilyName).FirstOrDefault();
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		PreloadService.Show();
+
+		try
+		{
+			this.Entity = await this.Context.Families
+				.Where(f => f.Id == this.Id)
+				.SingleOrDefaultAsync();
+
+			
+		}
+		catch (Exception ex)
+		{
+			Error(ex);
+		}
+
+		PreloadService.Hide();
+	}
+
+	private async Task<GridDataProviderResult<Family.Member>> GridDataProvider(GridDataProviderRequest<Family.Member> request)
+	{
+		return await Task.FromResult(request.ApplyTo(this.Entity.Members));
+	}
+}
+

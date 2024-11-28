@@ -1,0 +1,44 @@
+﻿@page "/Registry/Vehicles"
+
+@inherits EntitySearch<RegistryDbContext, long, Vehicle, VehicleFilter>
+
+<PageTitle>@this.Title</PageTitle>
+
+<Card>
+	<CardHeader>
+
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-2">
+			<div class="col">
+				<div class="form-floating">
+					<InputText class="form-control" @bind-Value="@Filter.Plate" />
+					<label>Targa</label>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div class="d-grid d-lg-block gap-2 justify-content-end">
+			<Button Color="ButtonColor.Primary" @onclick="Search"> Kerko </Button>
+			<Button Color="ButtonColor.Danger" @onclick="Clear"> Anullo </Button>
+		</div>
+	</CardHeader>
+	<CardBody>
+
+		<Grid @ref="Grid" Class="table table-hover table-bordered table-striped" AllowFiltering="false" AllowPaging="true"
+		TItem="Vehicle"
+		DataProvider="async (request) => await request.ApplyToAsync(this.Query)">
+
+			<GridColumns>
+				<GridColumn TItem="Vehicle" HeaderText="Targa" PropertyName="Plate">
+					@context.Plate
+				</GridColumn>
+			</GridColumns>
+
+		</Grid>
+	</CardBody>
+</Card>
+
+@code
+{
+	protected override string Title => "";
+	protected override string Excerpt => "";
+}

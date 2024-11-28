@@ -1,18 +1,23 @@
 ﻿using BlazorBootstrap;
 
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+
+
 namespace Infokom.Blazor.Bootstrap.Extensions
 {
+
 	public static class GridDataProviderRequestExtensions
 	{
 		public static async Task<GridDataProviderResult<TItem>> ApplyToAsync<TItem>(this GridDataProviderRequest<TItem> request, IQueryable<TItem> query)
@@ -87,4 +92,71 @@ namespace Infokom.Blazor.Bootstrap.Extensions
 		}
 
 	}
+
+
+
+	
+	public class Notifier : ToastService
+	{
+		public void Notify(Notification notification)
+		{
+			this.Notify(new ToastMessage()
+			{
+				AutoHide = notification.NotificationType != Notification.Type.ERROR,
+				Type = notification.NotificationType switch
+				{
+					Notification.Type.INFO => ToastType.Info,
+					Notification.Type.WARNING => ToastType.Warning,
+					Notification.Type.ERROR => ToastType.Danger,
+					_ => default,
+				},
+				IconName = notification.NotificationType switch
+				{
+					Notification.Type.INFO => IconName.InfoCircle,
+					Notification.Type.WARNING => IconName.ExclamationTriangle,
+					Notification.Type.ERROR => IconName.ExclamationCircle,
+					_ => default,
+				},
+				Title = notification.Subject,
+				Message = notification.Message,
+				HelpText = notification.Created.ToString("dd.MM.yyyy HH:mm:ss"),
+			});
+		}
+	}
+
+	public sealed record Notification
+	{
+		public enum Type
+		{
+			INFO = 2,
+			WARNING = 3,
+			ERROR = 4,
+		}
+
+		public Notification(Type type, string subject, string message)
+		{
+			this.NotificationType = type;
+			this.Subject = subject;
+			this.Message = message;
+		}
+
+		public DateTimeOffset Created { get; }
+
+		public Type NotificationType { get; }
+
+		public string Subject { get; }
+
+		public string Message { get; }
+
+
+
+		public static Notification Info(string message) => new(Type.INFO, null, message);
+		public static Notification Info(string subject, string message) => new(Type.INFO, subject, message);
+		public static Notification Warning(string message) => new(Type.WARNING, null, message);
+		public static Notification Warning(string subject, string message) => new(Type.WARNING, subject, message);
+		public static Notification Error(string message) => new(Type.ERROR, null, message);
+		public static Notification Error(string subject, string message) => new(Type.ERROR, subject, message);
+	}
+
+	
 }

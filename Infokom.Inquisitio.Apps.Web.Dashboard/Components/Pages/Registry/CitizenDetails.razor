@@ -1,0 +1,159 @@
+﻿@inherits EntityDetails<RegistryDbContext, long, Citizen>
+
+@if (Entity is not null)
+{
+	<Card>
+		<CardBody>
+			<div class="row">
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.Code" />
+						<label>Nr. Personal</label>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.GivenName" />
+						<label>Emri</label>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.FamilyName" />
+						<label>Mbiemri</label>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.FatherName" />
+						<label>Atesia</label>
+					</div>
+				</div>
+
+				<div class="col-4 offset-8">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.MotherName" />
+						<label>Amesia</label>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<DateInput class="form-control fw-bold" readonly @bind-Value="Entity.BirthDate" />
+						<label>Datelindja</label>
+					</div>
+				</div>
+				<div class="col-8">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.BirthPlace" />
+						<label>Vendlindja</label>
+					</div>
+				</div>
+
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<input type="text" class="form-control fw-bold" readonly value="@Entity.Gender.GetDisplayName()" />
+						<label>Gjinia</label>
+					</div>
+				</div>
+
+
+				<div class="col-4 offset-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.Nationality" />
+						<label>Shtetesia</label>
+					</div>
+				</div>
+
+			</div>
+
+			<hr />
+			<div class="row">
+
+				<div class="col-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.District" />
+						<label>Qyteti</label>
+					</div>
+				</div>
+				<div class="col-4 offset-4">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.Register" />
+						<label>Regsjistri</label>
+					</div>
+				</div>
+
+				<div class="col-12">
+					<div class="form-floating mb-2">
+						<InputText class="form-control fw-bold" readonly @bind-Value="Entity.Address" />
+						<label>Adresa</label>
+					</div>
+				</div>
+
+			</div>
+
+			<hr />
+
+			<div class="row">
+				<div class="col-4">
+					<div class="form-floating mb-2">
+
+						<input class="form-control fw-bold" readonly type="text" value="@Entity.Marital.GetDisplayName()" />
+						<label>Gjendja Civile</label>
+					</div>
+				</div>
+				@if (Entity.Consorts.FirstOrDefault() is Citizen.Consort consort)
+				{
+					<div class="col-4">
+						<div class="form-floating mb-2">
+
+							<input class="form-control fw-bold" readonly type="text" value="@consort.GivenName" />
+							<label>Emer Bashkeshorti</label>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="form-floating mb-2">
+
+							<input class="form-control fw-bold" readonly type="text" value="@consort.FamilyName" />
+							<label>Emer Bashkeshorti</label>
+						</div>
+					</div>
+					<div class="col-4 offset-8">
+						<div class="form-floating mb-2">
+
+							<input class="form-control fw-bold" readonly type="text" value="@consort.MaidenName" />
+							<label>Mbiemer Para Martese</label>
+						</div>
+					</div>
+				}
+			</div>
+
+
+		</CardBody>
+		<CardFooter>
+
+		</CardFooter>
+
+	</Card>
+}
+
+@code {
+	protected override string Title => "INDIVID";
+
+	protected override string Excerpt => "" ;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+	}
+
+	private async Task<GridDataProviderResult<Citizen.Consort>> ConsortGridDataProvider(GridDataProviderRequest<Citizen.Consort> request)
+	{
+		return await Task.FromResult(request.ApplyTo(this.Entity.Consorts));
+	}
+}

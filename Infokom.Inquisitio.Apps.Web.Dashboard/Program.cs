@@ -1,6 +1,8 @@
 ﻿using Infokom.Inquisitio.Application.Extensions;
 using Infokom.Inquisitio.Apps.Web.Dashboard.Components;
 
+using Microsoft.AspNetCore.HttpLogging;
+
 namespace Infokom.Inquisitio.Apps.Web.Dashboard
 {
 	public class Program
@@ -11,6 +13,14 @@ namespace Infokom.Inquisitio.Apps.Web.Dashboard
 
 
 			// Add services to the container.
+			builder.Services.AddW3CLogging(l =>
+			{
+				l.LoggingFields = W3CLoggingFields.All;
+				l.FlushInterval = TimeSpan.FromSeconds(10);
+			});
+
+			builder.Services.AddLogging(l => l.AddConsole());
+			
 			builder.Services.AddApplicationServices(builder.Configuration);
 
 			

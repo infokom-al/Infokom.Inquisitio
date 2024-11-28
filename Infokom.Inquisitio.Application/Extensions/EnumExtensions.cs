@@ -52,5 +52,9 @@ namespace Infokom.Inquisitio.Application.Extensions
 				return attribute == null ? e.ToString() : attribute.Name;
 			});
 		}
+
+
+		public static long GetId<TEnum>(this TEnum source) where TEnum : struct, Enum => (int)(object)source;
+		public static string GetName<TEnum>(this TEnum source) where TEnum : struct, Enum => Enum.GetName(source);
 	}
 }

@@ -11,9 +11,14 @@ namespace Infokom.Inquisitio.Database.Registry.Configurations
 		{
 			entity.ToTable("Family", "Registry");
 
-			entity.OwnsMany(x => x.Members)
-				.ToTable("Family.Member", "Registry")
-				.WithOwner(y => y.Owner);
+			entity.OwnsMany(x => x.Members, ownedEntity =>
+			{
+				ownedEntity.ToTable("Family.Member", "Registry")
+					.WithOwner(y => y.Owner);
+
+				ownedEntity.Navigation(y => y.IsA).AutoInclude();
+			});
+				
 		}
 	}
 }

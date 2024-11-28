@@ -5,6 +5,7 @@ namespace Infokom.Inquisitio.Domain.Entities.Registry
 {
 	public partial class Vehicle : Entity<Guid>
 	{
+
 		public string Code { get; set; }
 
 		public string Name { get; set; }

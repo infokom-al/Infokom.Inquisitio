@@ -15,7 +15,7 @@ namespace Infokom.Inquisitio.Domain
 
 	}
 
-	public abstract class Entity<TKey> : Entity where TKey : notnull, IEquatable<TKey>
+	public abstract class Entity<TKey> : Entity
 	{
 		public TKey Id { get; }
 	}

@@ -22,6 +22,12 @@
      </FooterSection>
 </BlazorBootstrapLayout>
 
+<Preload LoadingText="Duke u ngarkuar..." />
+
+<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" ShowCloseButton="true" />
+
+<Modal IsServiceModal="true" />
+
 @code {
      Sidebar sidebar;
      IEnumerable<NavItem> navItems;
