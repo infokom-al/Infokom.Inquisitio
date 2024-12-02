@@ -18,7 +18,13 @@ namespace Infokom.Inquisitio.Database.Identity
 
 		}
 
-		
+		protected override void OnConfiguring(DbContextOptionsBuilder options)
+		{
+			if (!options.IsConfigured)
+			{
+				options.UseSqlServer("Data Source=(local);Initial Catalog=Infokom.Inquisitio;Integrated Security=SSPI;Encrypt=False;MultipleActiveResultSets=true;");
+			}
+		}
 
 		protected override void OnModelCreating(ModelBuilder model)
 		{

@@ -1,0 +1,56 @@
+﻿@using System.Reflection
+@using System.ComponentModel
+@using Infokom.Domain
+@using BlazorBootstrap
+@using Infokom.Blazor.Bootstrap
+@using Infokom.Blazor.Bootstrap.Extensions
+
+@typeparam TEntity where TEntity : class
+
+<Grid @ref="grid"
+	 TItem="TEntity"
+	 DataProvider="GridDataProvider"
+	 Class="table table-hover table-bordered table-striped"
+	 AllowFiltering="false"
+	 AllowSorting="false"
+	 AllowPaging="true"
+	 PageSize="10"
+	 PageSizeSelectorItems="[5, 10, 20, 50, 100]"
+	 PageSizeSelectorVisible="true"
+	 ItemsPerPageText="@Properties.Resources.RowsPerPageText">
+
+	<GridColumns>
+		@foreach (var property in typeof(TEntity).GetProperties())
+		{
+			if (property.GetCustomAttribute<DisplayNameAttribute>() is DisplayNameAttribute displayNameAttribute)
+			{
+				<GridColumn TItem="TEntity" PropertyName="@property.Name" HeaderText="@displayNameAttribute.DisplayName">
+					@property.GetValue(context)
+				</GridColumn>
+			}
+		}
+	</GridColumns>
+</Grid>
+
+
+@code {
+
+	private Grid<TEntity> grid = default!;
+
+	[Parameter]
+	public IQueryable<TEntity> Data { get; set; }
+
+	private async Task<GridDataProviderResult<TEntity>> GridDataProvider(GridDataProviderRequest<TEntity> request)
+	{
+		if (this.Data is null)
+			return request.ApplyTo(Enumerable.Empty<TEntity>());
+
+		return await request.ApplyToAsync(this.Data);
+	}
+
+	public async Task RefreshDataAsync()
+	{
+		await this.grid?.RefreshDataAsync();
+	}
+
+}

@@ -21,4 +21,8 @@
     <Folder Include="Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infokom.Domain\Infokom.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
