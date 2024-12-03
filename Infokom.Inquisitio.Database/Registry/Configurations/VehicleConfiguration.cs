@@ -11,22 +11,12 @@ namespace Infokom.Inquisitio.Database.Registry.Configurations
 		{
 			entity.ToTable("Vehicle", "Registry");
 
-			entity.Property(e => e.Brand).IsUnicode(false);
-			entity.Property(e => e.Code).IsUnicode(false);
-			entity.Property(e => e.Color).IsUnicode(false);
-			entity.Property(e => e.Model).IsUnicode(false);
-			entity.Property(e => e.Name).IsUnicode(false);
-			entity.Property(e => e.OwnerCode)
-				 .IsUnicode(false)
-				 .HasColumnName("Owner.Code");
-			entity.Property(e => e.OwnerName)
-				 .IsUnicode(false)
-				 .HasColumnName("Owner.Name");
-			entity.Property(e => e.OwnerType)
-				 .IsUnicode(false)
-				 .HasColumnName("Owner.Type");
-			entity.Property(e => e.Plate).IsUnicode(false);
-
+			entity.OwnsOne(x => x.Owner, ownedType =>
+			{
+				ownedType.Property(y => y.Type).HasColumnName("Owner.Type");
+				ownedType.Property(y => y.Code).HasColumnName("Owner.Code");
+				ownedType.Property(y => y.Name).HasColumnName("Owner.Name");
+			});
 
 			entity.HasKey(e => e.Id	);
 		}

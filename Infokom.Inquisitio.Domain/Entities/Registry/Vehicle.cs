@@ -1,27 +1,33 @@
-﻿using System;
+﻿using Infokom.Inquisitio.Domain.Atomics;
+using Infokom.Inquisitio.Domain.Records;
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Infokom.Inquisitio.Domain.Entities.Registry
 {
-	public partial class Vehicle : Entity<Guid>
+	public class Vehicle : Entity<Guid>
 	{
-
+		[Required, StringLength(32)]
 		public string Code { get; set; }
 
+		[Required, StringLength(256)]
 		public string Name { get; set; }
 
+		[Required, StringLength(64)]
 		public string Brand { get; set; }
 
+		[Required, StringLength(64)]
 		public string Model { get; set; }
 
-		public string Color { get; set; }
+		public Color Color { get; set; }
 
+		[Required, StringLength(64)]
 		public string Plate { get; set; }
 
-		public string OwnerType { get; set; }
 
-		public string OwnerCode { get; set; }
 
-		public string OwnerName { get; set; }
+		public Subject Owner { get; set; } = new Subject();
 	}
 }

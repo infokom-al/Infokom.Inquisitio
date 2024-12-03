@@ -30,12 +30,6 @@ namespace Infokom.Inquisitio.Apps.Web.Dashboard.Components.Pages
 		protected NavigationManager NavigationManager { get; set; }
 
 
-		protected abstract string Title { get; }
-
-		protected abstract string Excerpt { get; }
-
-
-
 		protected void Error(string message, string subject)
 		{
 			this.Logger?.LogError("{0}: {1}", message, subject);
@@ -53,6 +47,12 @@ namespace Infokom.Inquisitio.Apps.Web.Dashboard.Components.Pages
 	{
 		[Inject]
 		protected TContext Context { get; set; }
+
+
+
+
+
+
 	}
 
 }

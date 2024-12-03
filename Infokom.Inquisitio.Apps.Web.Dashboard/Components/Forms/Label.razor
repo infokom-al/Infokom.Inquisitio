@@ -1,0 +1,26 @@
+﻿@using System.ComponentModel.DataAnnotations
+<label>@label</label>
+
+@code {
+
+
+	[Parameter] public Expression<Func<object>> For { get; set; }
+
+	private string label => GetDisplayName();
+
+	private string GetDisplayName()
+	{
+		MemberExpression expression;
+		if (For.Body is MemberExpression)
+		{
+			expression = (MemberExpression)For.Body;
+		}
+		else
+		{
+			expression = (MemberExpression)((UnaryExpression)For.Body).Operand;
+		}
+
+		
+		return expression.Member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? expression.Member.GetCustomAttribute<DisplayAttribute>()?.Name ?? expression.Member.Name ?? "";
+	}
+}

@@ -27,12 +27,19 @@ namespace Infokom.Inquisitio.Database.Registry
 
 		public virtual DbSet<Vehicle> Vehicles { get; set; }
 
+		public virtual DbSet<Contact> Contacts { get; set; }
+
+		public virtual DbSet<Salary>  Salaries { get; set; }
+
 
 		protected override void ConfigureConventions(ModelConfigurationBuilder configuration)
 		{
 			configuration.Properties<Gender>().HaveConversion<EnumToNumberConverter<Gender, byte>>();
 			configuration.Properties<Marital>().HaveConversion<EnumToNumberConverter<Marital, byte>>();
 			configuration.Properties<Kinship>().HaveConversion<EnumToNumberConverter<Kinship, byte>>();
+			configuration.Properties<Color>().HaveConversion<EnumToNumberConverter<Color, int>>();
+			configuration.Properties<SubjectType>().HaveConversion<EnumToNumberConverter<SubjectType, byte>>();
+			configuration.Properties<EnterpriseType>().HaveConversion<EnumToNumberConverter<EnterpriseType, byte>>();
 		}
 
 		protected override void OnModelCreating(ModelBuilder model)
@@ -42,6 +49,8 @@ namespace Infokom.Inquisitio.Database.Registry
 			model.ApplyConfiguration(new CitizensConfiguration());
 			model.ApplyConfiguration(new FamilyConfiguration());
 			model.ApplyConfiguration(new VehicleConfiguration());
+			model.ApplyConfiguration(new ContactConfiguration());
+			model.ApplyConfiguration(new SalaryConfiguration());
 		}
 	}
 

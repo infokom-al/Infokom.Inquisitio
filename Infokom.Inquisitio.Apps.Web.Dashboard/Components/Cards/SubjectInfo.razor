@@ -1,0 +1,17 @@
+﻿<dl class="row">
+
+
+	<dt class="col-2">Kodi</dt>
+	<dd class="col-4">@Value.Code</dd>
+
+	<dt class="col-2">Tipi</dt>
+	<dd class="col-4">Person @Value.Type.GetDisplayName()</dd>
+
+	<dt class="col-2">Emri</dt>
+	<dd class="col-10">@Value.Name</dd>
+</dl>
+
+@code {
+	[Parameter]
+	public Subject Value { get; set; }
+}

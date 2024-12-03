@@ -1,9 +1,8 @@
-﻿@inherits EntityDetails<RegistryDbContext, long, Family>
+﻿@inherits EntityInfo<RegistryDbContext, Family>
 
 
 @if (this.Entity != null)
 {
-
 	<Card>
 		<CardHeader>
 			<h3>@this.Title</h3>
@@ -11,13 +10,13 @@
 		</CardHeader>
 		<CardBody>
 			<Grid Class="table table-hover table-bordered table-striped small"
-				 Responsive="true"
-				 FixedHeader="true"
-				 AllowPaging="true" AutoHidePaging="true"
-				 AllowSorting="false"
-				 AllowFiltering="false"
-				 TItem="Family.Member"
-				 DataProvider="GridDataProvider">
+			Responsive="true"
+			FixedHeader="true"
+			AllowPaging="true" AutoHidePaging="true"
+			AllowSorting="false"
+			AllowFiltering="false"
+			TItem="Family.Member"
+			DataProvider="GridDataProvider">
 
 				<GridColumns>
 					<GridColumn TItem="Family.Member" HeaderText="Emeri" PropertyName="GivenName">
@@ -65,30 +64,11 @@
 
 @code {
 
-	protected override string Title => "FAMILJA";
+	protected string Title => "FAMILJA";
 
-	protected override string Excerpt => this.Entity?.Members.Where(x => x.Role == Infokom.Inquisitio.Domain.Atomics.Kinship._1).Select(x => x.IsA.GivenName + " " + x.IsA.FamilyName).FirstOrDefault();
+	protected string Excerpt => this.Entity?.Members.Where(x => x.Role == Infokom.Inquisitio.Domain.Atomics.Kinship._1).Select(x => x.IsA.GivenName + " " + x.IsA.FamilyName).FirstOrDefault();
 
 
-	protected override async Task OnInitializedAsync()
-	{
-		PreloadService.Show();
-
-		try
-		{
-			this.Entity = await this.Context.Families
-				.Where(f => f.Id == this.Id)
-				.SingleOrDefaultAsync();
-
-			
-		}
-		catch (Exception ex)
-		{
-			Error(ex);
-		}
-
-		PreloadService.Hide();
-	}
 
 	private async Task<GridDataProviderResult<Family.Member>> GridDataProvider(GridDataProviderRequest<Family.Member> request)
 	{

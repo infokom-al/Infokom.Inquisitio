@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
@@ -17,6 +18,23 @@ namespace Infokom.Inquisitio.Domain
 
 	public abstract class Entity<TKey> : Entity
 	{
+		[Key]
 		public TKey Id { get; }
 	}
+
+
+
+
+
+
+	public interface IEntity
+	{
+		public ulong Id { get; set; }
+
+
+
+
+
+	}
+
 }

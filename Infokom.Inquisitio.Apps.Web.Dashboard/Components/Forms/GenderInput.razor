@@ -1,0 +1,8 @@
+﻿@inherits InputSelect<Gender>
+
+<option></option>
+@foreach (var option in Enum.GetValues<Gender>())
+{
+	<option value="@option">@option.GetDisplayName()</option>
+
+}

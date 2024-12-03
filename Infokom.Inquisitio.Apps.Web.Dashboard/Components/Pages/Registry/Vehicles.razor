@@ -1,0 +1,153 @@
+﻿@page "/Registry/Vehicles"
+
+@inherits Page<RegistryDbContext>
+
+<div class="container">
+	<Card>
+		<CardHeader>
+			<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-2">
+				<div class="col">
+					<div class="form-floating">
+						<InputText class="form-control" @bind-Value="Input.Plate" />
+						<label>Targa</label>
+					</div>
+				</div>
+
+				<div class="col">
+					<div class="form-floating">
+						<InputText class="form-control" @bind-Value="Input.Brand" />
+						<label>Marka</label>
+					</div>
+				</div>
+
+				<div class="col">
+					<div class="form-floating">
+						<InputText class="form-control" @bind-Value="Input.Model" />
+						<label>Modeli</label>
+					</div>
+				</div>
+
+				<div class="col">
+					<div class="form-floating">
+						<InputSelect class="form-control" @bind-Value="Input.Color">
+							<option></option>
+							@foreach (var c in Enum.GetValues<Color>())
+							{
+								<option value="@((int)c)">@c.GetDisplayName()</option>
+							}
+						</InputSelect>
+						<label>Ngjyra</label>
+					</div>
+				</div>
+
+				<div class="col">
+					<div class="form-floating">
+						<InputText class="form-control" @bind-Value="Input.Owner" />
+						<label>Pronari</label>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="d-grid d-lg-block gap-2 justify-content-end">
+				<Button Type="ButtonType.Button" Color="ButtonColor.Primary" @onclick="Search"> Kerko </Button>
+				<Button Type="ButtonType.Button" Color="ButtonColor.Danger" @onclick="Clear"> Anullo </Button>
+			</div>
+		</CardHeader>
+		<CardBody>
+
+			<Grid @ref="Grid" Class="table table-hover table-bordered table-striped" AllowFiltering="false" AllowPaging="true"
+				 TItem="Vehicle"
+				 DataProvider="GridDataProvider">
+
+				<GridColumns>
+					<GridColumn TItem="Vehicle" HeaderText="Targa" PropertyName="Plate" Style="width: 10rem">
+						@context.Plate
+					</GridColumn>
+
+					<GridColumn TItem="Vehicle" HeaderText="Marka" PropertyName="Brand">
+						@context.Brand
+					</GridColumn>
+					<GridColumn TItem="Vehicle" HeaderText="Modeli" PropertyName="Model">
+						@context.Model
+					</GridColumn>
+					<GridColumn TItem="Vehicle" HeaderText="Ngjyra" PropertyName="Color" Style="width: 10rem">
+						<span class="me-3" style="color: #@(((int)context.Color).ToString("x6"))">
+							<Icon Name="IconName.CircleFill"></Icon>
+						</span>
+						@context.Color.GetDisplayName()
+
+					</GridColumn>
+					<GridColumn TItem="Vehicle" HeaderText="Pronari" PropertyName="Owner">
+						<div class="d-flex justify-content-between">
+							<span class="flex-fill">@context.Owner.Name</span>
+							<Button Type="ButtonType.Link" Color="ButtonColor.Link" @onclick="() => ShowOwner(context)">
+								<Icon Name="IconName.InfoCircle"></Icon>
+							</Button>
+						</div>
+					</GridColumn>
+				</GridColumns>
+
+			</Grid>
+		</CardBody>
+	</Card>
+</div>
+
+<Modal @ref="Modal"></Modal>
+
+@code
+{
+
+	private VehicleSpecification Input { get; set; }
+
+	private IQueryable<Vehicle> Data { get; set; }
+
+	private Grid<Vehicle> Grid { get; set; }
+
+
+	private Modal Modal { get; set; }
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		this.Input = new VehicleSpecification();
+
+		await base.OnInitializedAsync();
+	}
+
+	protected async Task Search()
+	{
+		this.Data = this.Context.Vehicles.Where(this.Input.ToExpression());
+
+		await this.Grid.RefreshDataAsync();
+	}
+
+	protected async Task Clear()
+	{
+		this.Input = new VehicleSpecification();
+
+		this.Data = null;
+
+		await this.Grid.RefreshDataAsync();
+	}
+
+
+
+	protected async Task<GridDataProviderResult<Vehicle>> GridDataProvider(GridDataProviderRequest<Vehicle> request)
+	{
+		if (this.Data == null)
+			return new GridDataProviderResult<Vehicle>() { Data = Enumerable.Empty<Vehicle>(), TotalCount = 0 };
+
+		return await request.ApplyToAsync(this.Data);
+	}
+
+
+	protected async Task ShowOwner(Vehicle vehicle)
+	{
+		await Modal.ShowAsync<SubjectInfo>($"{vehicle.Plate} - PRONARI", null, new Dictionary<string, object>
+			{
+				{ "Value", vehicle.Owner }
+			});
+		
+	}
+
+}

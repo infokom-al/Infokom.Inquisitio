@@ -1,5 +1,7 @@
 ﻿@using System.Diagnostics
 @using System.Linq
+@using System.Reflection
+@using System.ComponentModel
 @using System.Linq.Expressions
 @using System.Net.Http
 @using System.Net.Http.Json
@@ -11,7 +13,14 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using BlazorBootstrap
+@using Infokom.Inquisitio.Domain.Atomics
+@using Infokom.Inquisitio.Domain.Entities
+@using Infokom.Inquisitio.Domain.Records
 @using Infokom.Inquisitio.Application.Extensions
 @using Infokom.Inquisitio.Apps.Web.Dashboard
 @using Infokom.Inquisitio.Apps.Web.Dashboard.Components
 @using Infokom.Inquisitio.Apps.Web.Dashboard.Components.Shared
+@using Infokom.Inquisitio.Apps.Web.Dashboard.Components.Cards
+@using Infokom.Inquisitio.Apps.Web.Dashboard.Components.Modals
+@using Infokom.Inquisitio.Apps.Web.Dashboard.Components.Forms
+@using Infokom.Inquisitio.Apps.Web.Dashboard.Components.Pages

@@ -2,6 +2,7 @@
 using Infokom.Inquisitio.Application.Services.Internal;
 using Infokom.Inquisitio.Database.Identity;
 using Infokom.Inquisitio.Database.Registry;
+using Infokom.Inquisitio.Domain.Entities.Registry;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,5 +28,7 @@ namespace Infokom.Inquisitio.Application.Extensions
 
 			return services;
 		}
+
+
 	}
 }

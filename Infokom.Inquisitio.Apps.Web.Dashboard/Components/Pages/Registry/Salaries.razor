@@ -1,0 +1,166 @@
+﻿@page "/Registry/Salaries"
+
+@inherits Page<RegistryDbContext>
+
+
+
+<div class="container">
+	<Card>
+		<CardHeader>
+			<div class="d-flex gap-3 flex-column flex-xl-row">
+
+				<div class="col mb-2">
+					<span class=" fw-bold">Punedhenesi</span>
+					<div class="input-group">
+						<div class="form-floating">
+							<InputText class="form-control" @bind-Value="Input.Employer.Code" />
+							<Label For="() => Input.Employer.Code" />
+						</div>
+						<div class="form-floating">
+							<InputText class="form-control" @bind-Value="Input.Employer.Name" />
+							<Label For="() => Input.Employer.Name" />
+						</div>
+					</div>
+				</div>
+
+				<div class="col mb-2">
+					<span class="fw-bold">Punemarresi</span>
+					<div class="input-group">
+						<div class="form-floating">
+							<InputText class="form-control" @bind-Value="Input.Employee.Code" />
+							<Label For="() => Input.Employee.Code" />
+						</div>
+						<div class="form-floating">
+							<InputText class="form-control" @bind-Value="Input.Employee.GivenName" />
+							<Label For="() => Input.Employee.GivenName" />
+						</div>
+						<div class="form-floating">
+							<InputText class="form-control" @bind-Value="Input.Employee.FamilyName" />
+							<Label For="() => Input.Employee.FamilyName" />
+						</div>
+					</div>
+				</div>
+
+				<div class="col mb-2">
+					<span class="fw-bold">Periudha</span>
+					<div class="input-group">
+						<div class="form-floating">
+							<InputNumber class="form-control" TValue="int?" @bind-Value="Input.Year" Min="2021" Max="2021" />
+							<Label For="() => Input.Year" />
+						</div>
+						<div class="form-floating">
+							<InputSelect class="form-control" TValue="Month?" @bind-Value="Input.Month">
+								<option></option>
+								@foreach (var month in Enum.GetValues<Month>())
+								{
+									<option value="@month">@month.GetDisplayName()</option>
+								}
+							</InputSelect>
+							<Label For="() => Input.Month" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="d-flex gap-2 justify-content-end">
+				<Button Type="ButtonType.Button" Color="ButtonColor.Primary" @onclick="Search"> Kerko </Button>
+				<Button Type="ButtonType.Button" Color="ButtonColor.Danger" @onclick="Clear"> Anullo </Button>
+			</div>
+		</CardHeader>
+		<CardBody>
+
+			<Grid @ref="Grid" Class="table table-hover table-striped" Responsive="true" AllowFiltering="false" AllowPaging="true"
+			TItem="Salary"
+			DataProvider="GridDataProvider">
+
+				<GridColumns>
+
+					<GridColumn TItem="Salary" PropertyName="@nameof(Salary.Employee)" HeaderText="NISH">
+						@context.Employee.Code
+					</GridColumn>
+					<GridColumn TItem="Salary" PropertyName="@nameof(Salary.Employee)" HeaderText="Emri">
+						@context.Employee.GivenName
+					</GridColumn>
+					<GridColumn TItem="Salary" PropertyName="@nameof(Salary.Employee)" HeaderText="Mbiemri">
+						@context.Employee.FamilyName
+					</GridColumn>
+					<GridColumn TItem="Salary" PropertyName="@nameof(Salary.Employer)" HeaderText="Punedhensi">
+						@context.Employer.Code
+					</GridColumn>
+					<GridColumn TItem="Salary" PropertyName="@nameof(Salary.Employer)" >
+						@context.Employer.Name
+					</GridColumn>
+					<GridColumn TItem="Salary" HeaderText="Periudha">
+						@(context.Month.GetDisplayName())
+					</GridColumn>
+					<GridColumn TItem="Salary" TextAlignment="Alignment.End">
+						20@(context.Year)
+					</GridColumn>
+					<GridColumn TItem="Salary" HeaderText="Paga" TextAlignment="Alignment.End">
+						@(context.Value)
+					</GridColumn>
+
+				</GridColumns>
+
+			</Grid>
+		</CardBody>
+	</Card>
+</div>
+
+
+@code {
+
+
+	private SalarySpecification Input { get; set; } = new();
+
+	private IQueryable<Salary> Data { get; set; }
+
+	private Grid<Salary> Grid { get; set; }
+
+
+	private Modal Modal { get; set; }
+
+
+	protected async Task Search()
+	{
+		this.Data = this.Context.Salaries.Where(this.Input.ToExpression())
+			.OrderBy(x => x.Employee.Name)
+			.ThenBy(x => x.Employer.Name)
+			.ThenBy(x => x.Year).ThenBy(x => x.Month);
+
+		await this.Grid.RefreshDataAsync();
+	}
+
+	protected async Task Clear()
+	{
+		this.Input = new();
+
+		this.Data = null;
+
+		await this.Grid.RefreshDataAsync();
+	}
+
+
+
+
+	protected async Task<GridDataProviderResult<Salary>> GridDataProvider(GridDataProviderRequest<Salary> request)
+	{
+		if (this.Data == null)
+			return new GridDataProviderResult<Salary>() { Data = Enumerable.Empty<Salary>(), TotalCount = 0 };
+
+		return await request.ApplyToAsync(this.Data);
+	}
+
+
+	private async Task ShowEmployer(Salary salary)
+	{
+		await ModalService.ShowAsync(new ModalOption()
+		{
+			Title = salary.Employer.Code,
+			Message = salary.Employer.Name,
+			ShowFooterButton = false,
+			Type = ModalType.Info
+		});
+	}
+
+}

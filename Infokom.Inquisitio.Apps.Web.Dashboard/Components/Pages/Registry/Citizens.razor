@@ -1,0 +1,214 @@
+﻿@page "/Registry/Citizens"
+
+@inherits Page<RegistryDbContext>
+
+<PageTitle>@this.Title</PageTitle>
+
+<Card>
+	<CardHeader>
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-2">
+			<div class="col">
+				<div class="form-floating">
+					<InputText class="form-control"  @bind-Value="@Input.GivenName" />
+					<Label For="() => Input.GivenName" />
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-floating">
+					<InputText class="form-control" @bind-Value="@Input.FamilyName" />
+					<Label For="() => Input.FamilyName" />
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-floating">
+					<InputText class="form-control" @bind-Value="@Input.FatherName" />
+					<Label For="() => Input.FatherName" />
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-floating">
+					<InputText class="form-control" @bind-Value="@Input.MotherName" />
+					<Label For="() => Input.MotherName" />
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-floating">
+					<DateInput Class="form-control" TValue="DateOnly?" @bind-Value="Input.BirthDate" />
+					<Label For="() => Input.BirthDate" />
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div class="d-grid d-lg-block gap-2 justify-content-end">
+			<Button Color="ButtonColor.Primary" @onclick="Search"> Kerko </Button>
+			<Button Color="ButtonColor.Danger" @onclick="Clear"> Anullo </Button>
+		</div>
+	</CardHeader>
+	<CardBody>
+		<Grid @ref="Grid" Class="table table-hover table-bordered table-striped" AllowFiltering="false" AllowPaging="true" TItem="Citizen"  DataProvider="GridDataProvider">
+
+			<GridColumns>
+				<GridColumn TItem="Citizen" HeaderText="Emer">
+					@context.GivenName
+				</GridColumn>
+				<GridColumn TItem="Citizen" HeaderText="Mbiemer">
+					@context.FamilyName
+				</GridColumn>
+				<GridColumn TItem="Citizen" HeaderText="Atesi">
+					@context.FatherName
+				</GridColumn>
+				<GridColumn TItem="Citizen" HeaderText="Amesi">
+					@context.MotherName
+				</GridColumn>
+				<GridColumn TItem="Citizen">
+					<HeaderContent>
+						<div class="row">
+							<div class="col-5">Datelindja</div>
+							<div class="col-5">Vendlindja</div>
+							<div class="col-2">Gjinia</div>
+						</div>
+					</HeaderContent>
+					<ChildContent>
+						<div class="row">
+							<div class="col-5">@context.BirthDate</div>
+							<div class="col-5">@context.BirthPlace</div>
+							<div class="col-2">
+								@if(context.Gender == Gender.Male)
+								{
+									<Icon Name="IconName.GenderMale"></Icon>
+								}
+								else if (context.Gender == Gender.Female)
+								{
+									<Icon Name="IconName.GenderFemale"></Icon>
+
+								}
+							</div>
+						</div>
+					</ChildContent>
+					
+				</GridColumn>
+				<GridColumn TItem="Citizen">
+					<Button Color="ButtonColor.Info" Outline="true" @onclick="async () => await ShowCitizen(context.Id)">
+						<Icon Name="IconName.Person"></Icon>
+					</Button>
+					<Button Color="ButtonColor.Info" Outline="true" @onclick="async () => await ShowFamily(context.Id)">
+						<Icon Name="IconName.People"></Icon>
+					</Button>
+				</GridColumn>
+			</GridColumns>
+		</Grid>
+	</CardBody>
+</Card>
+
+<Modal @ref="Modal" ModalType="ModalType.Primary" Size="ModalSize.ExtraLarge" IsScrollable="true" ShowCloseButton="false" Class="bg-transparent">
+
+</Modal>
+
+@code {
+
+	protected string Title => "QYTETARET";
+	protected string Excerpt => "Regjistri i Gjendjes Civile (Nentor 2008) ver. 1.4";
+
+
+	private CitizenSpecification Input { get; set; }
+
+	private Grid<Citizen> Grid { get; set; } = default!;
+
+
+
+	private Modal Modal { get; set; } = default!;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		this.Input = new();
+	}
+
+
+	private async Task<GridDataProviderResult<Citizen>> GridDataProvider(GridDataProviderRequest<Citizen> request)
+	{
+		var query = this.Context.Citizens.AsQueryable();
+
+		if (!string.IsNullOrEmpty(Input.GivenName)) query = query.Where(x => EF.Functions.Like(x.GivenName, $"{Input.GivenName}%"));
+		if (!string.IsNullOrEmpty(Input.FamilyName)) query = query.Where(x => EF.Functions.Like(x.FamilyName, $"{Input.FamilyName}%"));
+		if (!string.IsNullOrEmpty(Input.FatherName)) query = query.Where(x => EF.Functions.Like(x.FatherName, $"{Input.FatherName}%"));
+		if (!string.IsNullOrEmpty(Input.MotherName)) query = query.Where(x => EF.Functions.Like(x.MotherName, $"{Input.MotherName}%"));
+		if (Input.BirthDate.HasValue) query = query.Where(x => EF.Functions.DateDiffDay(x.BirthDate, Input.BirthDate) == 0);
+
+		return await request.ApplyToAsync(query);
+	}
+
+	protected async Task Search()
+	{
+		await Grid.RefreshDataAsync();
+	}
+
+	protected async Task Clear()
+	{
+		this.Input = new();
+
+		await Search();
+	}
+
+	
+
+
+	private async Task ShowCitizen(long citizenId)
+	{
+		this.PreloadService.Show();
+
+		try
+		{
+
+			var citizenName = await this.Context.Citizens.Where(x => x.Id == citizenId).Select(x => x.GivenName + " " + x.FamilyName).FirstOrDefaultAsync();
+
+			if (citizenName != null)
+			{
+				await Modal.ShowAsync<CitizenDetails>(citizenName, null, new Dictionary<string, object>()
+				{
+					{ "Id", citizenId }
+				});
+			}
+		}
+		catch (Exception ex)
+		{
+			this.ToastService.Notify(new ToastMessage(ToastType.Danger, "ERROR", ex.Message));
+		}
+
+		this.PreloadService.Hide();
+
+	}
+
+	private async Task ShowFamily(long citizenId)
+	{
+
+		this.PreloadService.Show();
+
+		try
+		{
+
+			var citizenName = await this.Context.Citizens.Where(x => x.Id == citizenId).Select(x => x.GivenName + " " + x.FamilyName).FirstOrDefaultAsync();
+
+			var familyId = await this.Context.Families.Where(f => f.Members.Any(m => m.Id == citizenId)).Select(f => f.Id).SingleOrDefaultAsync();
+
+
+
+			if (familyId != default)
+			{
+				await Modal.ShowAsync<FamilyDetails>(null, null, new Dictionary<string, object>()
+				{
+					{ "Id", familyId }
+				});
+			}
+		}
+		catch (Exception ex)
+		{
+			this.ToastService.Notify(new ToastMessage(ToastType.Danger, "ERROR", ex.Message));
+		}
+
+		this.PreloadService.Hide();
+
+
+	}
+}

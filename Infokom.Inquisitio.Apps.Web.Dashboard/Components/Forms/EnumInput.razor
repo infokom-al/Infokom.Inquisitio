@@ -1,0 +1,8 @@
+﻿@typeparam TEnum where TEnum : Enum
+@inherits InputSelect<TEnum>
+
+<option></option>
+@foreach (var option in Enum.GetValues<Gender>())
+{
+	<option value="@option">@option.GetDisplayName()</option>
+}

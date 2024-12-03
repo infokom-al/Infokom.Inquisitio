@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Infokom.Inquisitio.Domain.Entities.Registry
 {
-	public partial class Citizen
+	public partial class Citizen : IEquatable<Citizen>, IComparable<Citizen>
 	{
 
 		[Key]
@@ -45,6 +45,13 @@ namespace Infokom.Inquisitio.Domain.Entities.Registry
 		public string Nationality { get; set; }
 
 		public Marital Marital { get; set; }
+
+		public int CompareTo(Citizen other) => this.ToString().CompareTo(other?.ToString());
+
+		public override bool Equals(object obj) => this.Equals(obj as Citizen);
+		public bool Equals(Citizen other) => other is not null && this.GetHashCode() == other.GetHashCode();
+		public override int GetHashCode() => HashCode.Combine(this.GivenName, this.FamilyName, this.FatherName, this.MotherName, this.BirthDate, this.BirthPlace, this.Gender);
+		public override string ToString() => $"{this.GivenName} {this.FatherName} {this.FamilyName}";
 	}
 }
 

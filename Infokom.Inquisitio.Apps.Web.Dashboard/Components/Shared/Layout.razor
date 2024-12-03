@@ -3,6 +3,7 @@
 <BlazorBootstrapLayout StickyHeader="true">
      <HeaderSection>
           
+
      </HeaderSection>
 
      <SidebarSection>
@@ -22,11 +23,12 @@
      </FooterSection>
 </BlazorBootstrapLayout>
 
+
 <Preload LoadingText="Duke u ngarkuar..." />
 
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" ShowCloseButton="true" />
 
-<Modal IsServiceModal="true" />
+<Modal IsServiceModal="true"  />
 
 @code {
      Sidebar sidebar;
@@ -59,8 +61,8 @@
                new NavItem { Id = "4", IconName = IconName.Database, Text = "Regjistrat"},
                new NavItem { Id = "4.1", ParentId = "4", IconName = IconName.Person, Text = "Gjendja Civile",  Href = "/Registry/Citizens" },
                new NavItem { Id = "4.2", ParentId = "4",  IconName = IconName.Truck, Text = "Targat e Automejetet", Href = "/Registry/Vehicles"},
-               new NavItem { Id = "4.3", ParentId = "4",  IconName = IconName.CurrencyExchange, Text = "Pagat e Punonjesve", Href = "/Registry/Employees"},
-               new NavItem { Id = "4.4", ParentId = "4",  IconName = IconName.Telephone, Text = "Numrat e Telefonit", Href = "/Registry/Phones"},
+               new NavItem { Id = "4.3", ParentId = "4",  IconName = IconName.CurrencyExchange, Text = "Pagat e Punonjesve", Href = "/Registry/Salaries"},
+               new NavItem { Id = "4.4", ParentId = "4",  IconName = IconName.Telephone, Text = "Numrat e Telefonit", Href = "/Registry/Contacts"},
           };
 
           return navItems;

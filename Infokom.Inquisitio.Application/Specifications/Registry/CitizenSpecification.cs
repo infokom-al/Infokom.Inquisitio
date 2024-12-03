@@ -15,9 +15,7 @@ using System.Threading.Tasks;
 
 namespace Infokom.Inquisitio.Application.FIlters.Registry
 {
-
-
-	public record CitizenFilter : IFilter<Citizen>
+	public record CitizenSpecification : ISpecification<Citizen>
 	{
 		[Display(GroupName = "Emri", Name = "Emër"), MaxLength(64)]
 		public string GivenName { get; set; }

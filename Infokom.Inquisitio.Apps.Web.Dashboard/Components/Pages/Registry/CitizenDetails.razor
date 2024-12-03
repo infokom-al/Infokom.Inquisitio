@@ -1,8 +1,11 @@
-﻿@inherits EntityDetails<RegistryDbContext, long, Citizen>
+﻿@inherits EntityInfo<RegistryDbContext, Citizen>
 
 @if (Entity is not null)
 {
 	<Card>
+		<CardHeader>
+			<h4>@Entity.ToString()</h4>
+		</CardHeader>
 		<CardBody>
 			<div class="row">
 				<div class="col-4">
@@ -143,14 +146,10 @@
 }
 
 @code {
-	protected override string Title => "INDIVID";
+	protected string Title => "INDIVID";
 
-	protected override string Excerpt => "" ;
+	protected string Excerpt => "" ;
 
-	protected override async Task OnInitializedAsync()
-	{
-		await base.OnInitializedAsync();
-	}
 
 	private async Task<GridDataProviderResult<Citizen.Consort>> ConsortGridDataProvider(GridDataProviderRequest<Citizen.Consort> request)
 	{

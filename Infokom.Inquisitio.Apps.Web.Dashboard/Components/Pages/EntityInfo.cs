@@ -13,11 +13,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infokom.Inquisitio.Apps.Web.Dashboard.Components.Pages
 {
-	public abstract class EntityDetails<TContext, TKey, TEntity> : Page<TContext> where TContext : DbContext where TKey : notnull where TEntity : class
+	public abstract class EntityInfo<TContext, TEntity> : Page<TContext> where TContext : DbContext where TEntity : class
 	{
-
 		[Parameter]
-		public TKey Id { get; set; }
+		public object Id { get; set; }
 
 		protected TEntity Entity { get; set; }
 
@@ -38,4 +37,8 @@ namespace Infokom.Inquisitio.Apps.Web.Dashboard.Components.Pages
 		}
 
 	}
+
+
+
+
 }
